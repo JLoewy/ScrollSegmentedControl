@@ -2,4 +2,4 @@
 
 A horizontally scrollable segment control implementation in SwiftUI
 
-![Example]([http://url/to/img.png](https://imgur.com/a/dOXREZS)https://imgur.com/a/dOXREZS)
+ ![Example](https://i.imgur.com/fCY1kZQ.png)
