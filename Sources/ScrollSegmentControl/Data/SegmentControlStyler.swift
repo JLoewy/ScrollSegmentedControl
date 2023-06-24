@@ -10,17 +10,21 @@ import SwiftUI
 
 public struct SegmentControlStyler {
     
-    let font: (active: Font, inactive: Font)
-    let textColor: (active: Color, inactive: Color)
+    let style: SegmentControlStyler.Style
+    
+    let font: SegmentControlStylerFont
+    let textColor: SegmentControlStylerColor
     
     var activeBarColor: Color
     var activeBarWidth: CGFloat = 4
     
-    public init(font: (active: Font, inactive: Font),
-                textColor: (active: Color, inactive: Color),
+    public init(style: SegmentControlStyler.Style = .underline,
+                font: SegmentControlStylerFont,
+                textColor: SegmentControlStylerColor,
                 activeBarColor: Color,
                 activeBarWidth: CGFloat? = nil) {
         
+        self.style          = style
         self.font           = font
         self.textColor      = textColor
         self.activeBarColor = activeBarColor
@@ -30,11 +34,53 @@ public struct SegmentControlStyler {
         }
     }
     
-    public init(font: Font,
-                textColor: (active: Color, inactive: Color),
+    public init(style: SegmentControlStyler.Style = .underline,
+                font: Font,
+                textColor: SegmentControlStylerColor,
                 activeBarColor: Color,
                 activeBarWidth: CGFloat? = nil) {
         
-        self.init(font: (font, font), textColor: textColor, activeBarColor: activeBarColor, activeBarWidth: activeBarWidth)
+        self.init(
+            style: style,
+            font: SegmentControlStylerFont(active: font),
+            textColor: textColor,
+            activeBarColor: activeBarColor,
+            activeBarWidth: activeBarWidth
+        )
+    }
+}
+
+// MARK: - SegmentedControlStyler.Style
+
+extension SegmentControlStyler {
+    public enum Style {
+        case underline
+        case capsule
+    }
+}
+
+// MARK: - SegmentControlStyler - Font
+
+public struct SegmentControlStylerFont {
+    
+    let active: Font
+    let inactive: Font
+    
+    init(active: Font, inactive: Font? = nil) {
+        self.active   = active
+        self.inactive = inactive ?? active
+    }
+}
+
+// MARK: - SegmentControlSyler - Color
+
+public struct SegmentControlStylerColor {
+    
+    let active: Color
+    let inactive: Color
+    
+    init(active: Color, inactive: Color? = nil) {
+        self.active   = active
+        self.inactive = inactive ?? active
     }
 }

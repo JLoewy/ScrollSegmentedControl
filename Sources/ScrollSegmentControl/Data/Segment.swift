@@ -7,10 +7,12 @@
 
 import Foundation
 
-public struct Segment {
+public struct Segment: Identifiable {
     
     public let title: String
     public var object: Any?
+    
+    public var id: String { self.title }
     
     public init(title: String, object: Any? = nil) {
         self.title = title
