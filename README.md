@@ -1,3 +1,3 @@
 # ScrollSegmentControl
 
-A description of this package.
+A horizontally scrollable segment control implementation in SwiftUI
