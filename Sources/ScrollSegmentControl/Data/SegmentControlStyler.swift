@@ -66,7 +66,7 @@ public struct SegmentControlStylerFont {
     let active: Font
     let inactive: Font
     
-    init(active: Font, inactive: Font? = nil) {
+    public init(active: Font, inactive: Font? = nil) {
         self.active   = active
         self.inactive = inactive ?? active
     }
@@ -79,7 +79,7 @@ public struct SegmentControlStylerColor {
     let active: Color
     let inactive: Color
     
-    init(active: Color, inactive: Color? = nil) {
+    public init(active: Color, inactive: Color? = nil) {
         self.active   = active
         self.inactive = inactive ?? active
     }
