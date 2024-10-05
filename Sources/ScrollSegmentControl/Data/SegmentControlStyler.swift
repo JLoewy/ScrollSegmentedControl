@@ -18,7 +18,7 @@ public struct SegmentControlStyler {
     var activeBarColor: Color
     var activeBarWidth: CGFloat = 4
     
-    public init(style: SegmentControlStyler.Style = .underline,
+    public init(style: SegmentControlStyler.Style = .underline(),
                 font: SegmentControlStylerFont,
                 textColor: SegmentControlStylerColor,
                 activeBarColor: Color,
@@ -34,7 +34,7 @@ public struct SegmentControlStyler {
         }
     }
     
-    public init(style: SegmentControlStyler.Style = .underline,
+    public init(style: SegmentControlStyler.Style = .underline(),
                 font: Font,
                 textColor: SegmentControlStylerColor,
                 activeBarColor: Color,
@@ -53,8 +53,10 @@ public struct SegmentControlStyler {
 // MARK: - SegmentedControlStyler.Style
 
 extension SegmentControlStyler {
+    
     public enum Style {
-        case underline
+        case underline(topPadding: CGFloat = 4)
+        case overline(bottomPadding: CGFloat = 4)
         case capsule
     }
 }

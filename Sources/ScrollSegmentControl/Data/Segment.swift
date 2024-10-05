@@ -15,7 +15,14 @@ public struct Segment: Identifiable {
     public var id: String { self.title }
     
     public init(title: String, object: Any? = nil) {
-        self.title = title
+        self.title  = title
         self.object = object
+    }
+}
+
+extension Segment: Equatable {
+    
+    public static func == (lhs: Segment, rhs: Segment) -> Bool {
+        lhs.id == rhs.id
     }
 }

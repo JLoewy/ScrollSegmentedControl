@@ -1,6 +1,8 @@
 import SwiftUI
 
-@available (iOS 16.0, *)
+// MARK: - GridSegmentControl
+
+@available(iOS 16.0, *)
 public struct GridSegmentControl: View {
     
     public let segments: [Segment]
@@ -25,12 +27,13 @@ public struct GridSegmentControl: View {
     }
     
     public var body: some View {
+        
         HStack {
             Grid(horizontalSpacing: leftAligned ? 8 : 16) {
                 GridRow {
-                    ForEach(segments) { segment in
+                    ForEach(segments) {
                         SegmentButtonView(
-                            segment: segment,
+                            segment: $0,
                             style: style,
                             activeSegment: $activeSegment,
                             scrollViewProxy: nil,
@@ -47,7 +50,9 @@ public struct GridSegmentControl: View {
     }
 }
 
-@available (iOS 15.0, *)
+// MARK: - ScrollSegmentControl
+
+@available(iOS 15.0, *)
 public struct ScrollSegmentControl: View {
     
     public let segments: [Segment]
@@ -75,35 +80,33 @@ public struct ScrollSegmentControl: View {
     }
     
     public var body: some View {
+
         
         Group {
             if scrollable {
                 ScrollViewReader { scrollViewProxy in
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HSTackSegmentedControl(
-                            spacing: spacing,
-                            segments: segments,
-                            style: style,
-                            activeSegment: $activeSegment,
-                            scrollViewProxy: scrollViewProxy,
-                            segmentTapped: self.segmentTapped
-                        )
+                        getHSTackSegmentedControl(scrollViewProxy: scrollViewProxy)
                     }
                 }
             }
             else {
-                HSTackSegmentedControl(
-                    spacing: spacing,
-                    segments: segments,
-                    style: style,
-                    activeSegment: $activeSegment,
-                    segmentTapped: self.segmentTapped
-                )
-                .padding(.horizontal, 32)
+                getHSTackSegmentedControl(scrollViewProxy: nil)
+                    .padding(.horizontal, 32)
             }
         }
     }
     
+    private func getHSTackSegmentedControl(scrollViewProxy: ScrollViewProxy?) -> some View {
+        HSTackSegmentedControl(
+            spacing: spacing,
+            segments: segments,
+            style: style,
+            activeSegment: $activeSegment,
+            scrollViewProxy: scrollViewProxy,
+            segmentTapped: self.segmentTapped
+        )
+    }
 }
 
 // MARK: - Mutators
@@ -143,19 +146,18 @@ private struct HSTackSegmentedControl: View {
     
     var body: some View {
         HStack(spacing: spacing) {
-            ForEach(Array(segments.enumerated()), id: \.offset) { (idx, segment) in
-                withAnimation {
-                    SegmentButtonView(
-                        segment: segment,
-                        style: style,
-                        activeSegment: $activeSegment,
-                        scrollViewProxy: scrollViewProxy,
-                        segmentTapped: segmentTapped
-                    )
-                    .id(segment.id)
-                    .padding(.vertical)
-                    .hoverEffect()
-                }
+            ForEach(segments) { segment in
+
+                SegmentButtonView(
+                    segment: segment,
+                    style: style,
+                    activeSegment: $activeSegment,
+                    scrollViewProxy: scrollViewProxy,
+                    segmentTapped: segmentTapped
+                )
+                .id(segment.id)
+                .padding(.vertical)
+                .hoverEffect()
             }
         }
         .padding(.top)
@@ -172,180 +174,140 @@ private struct HSTackSegmentedControl: View {
     }
 }
 
-// MARK: - SegmentButtonView
-
-private struct SegmentButtonView: View {
-    
-    let segment: Segment
-    let style: SegmentControlStyler
-    
-    @Binding var activeSegment: String
-    var scrollViewProxy: ScrollViewProxy?
-    
-    var segmentTapped:((Segment) -> Void)?
-    
-    private func isActiveSegment(currentSegment: Segment) -> Bool {
-        (currentSegment.title == activeSegment)
-    }
-    
-    var body: some View {
-        Button {
-            activeSegment = segment.title
-            segmentTapped?(segment)
-            
-            if let scrollViewProxy {
-                withAnimation {
-                    scrollViewProxy.scrollTo(segment.id)
-                }
-            }
-        } label: {
-            
-            switch self.style.style {
-                case .underline:
-                    UnderlineSegmentButtonView(
-                        segment: segment,
-                        style: style,
-                        isActiveSegment: isActiveSegment(currentSegment: segment)
-                    )
-                    
-                case .capsule:
-                    Text(segment.title)
-                        .font(isActiveSegment(currentSegment: segment) ? style.font.active : style.font.inactive)
-                        .foregroundColor((segment.title == activeSegment) ? style.textColor.active : style.textColor.inactive)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 4)
-                        .background(isActiveSegment(currentSegment: segment) ? style.activeBarColor : Color.clear)
-                        .clipShape(Capsule())
-                    
-            }
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-
-// MARK: - UnderlineSegment - ButtonView
-
-private struct UnderlineSegmentButtonView: View {
-    
-    let segment: Segment
-    let style: SegmentControlStyler
-    
-    let isActiveSegment: Bool
-    
-    var body: some View {
-        
-        VStack(spacing: 4) {
-            Text(segment.title)
-                .font(isActiveSegment ? style.font.active : style.font.inactive)
-                .foregroundColor(isActiveSegment ? style.textColor.active : style.textColor.inactive)
-            
-            (isActiveSegment ? style.activeBarColor : Color.clear)
-                .cornerRadius(style.activeBarWidth / 2)
-                .frame(height: style.activeBarWidth)
-        }
-    }
-}
-
 // MARK: - Preview
 
-struct ScrollSegmentControl_Previews: PreviewProvider {
+@available(iOS 18.0, *)
+#Preview {
     
-    static var previews: some View {
-        VStack {
-            
-            if #available(iOS 16.0, *) {
-                GridSegmentControl(
-                    segments: [
-                        Segment(title: "Item One"),
-                        Segment(title: "Item Two"),
-                        Segment(title: "Item Three")
-                    ],
-                    activeSegment: .constant("Item One"),
-                    leftAligned: true,
-                    style: SegmentControlStyler(
-                        style: .capsule,
-                        font: Font.system(size: 16, weight: .semibold),
-                        textColor: SegmentControlStylerColor(active: Color.white, inactive: Color.gray),
-                        activeBarColor: Color.blue
-                    ),
-                    segmentTapped: nil
-                )
-                
-                GridSegmentControl(
-                    segments: [
-                        Segment(title: "Item One"),
-                        Segment(title: "Item Two"),
-                        Segment(title: "Item Three")
-                    ],
-                    activeSegment: .constant("Item One"),
-                    leftAligned: false,
-                    style: SegmentControlStyler(
-                        style: .capsule,
-                        font: Font.system(size: 16, weight: .semibold),
-                        textColor: SegmentControlStylerColor(active: Color.white, inactive: Color.gray),
-                        activeBarColor: Color.blue
-                    ),
-                    segmentTapped: nil
-                )
-            }
-            ScrollSegmentControl(
-                segments: [
-                    Segment(title: "Study"),
-                    Segment(title: "Practice")
-                ],
-                scrollable: false,
-                activeSegment: .constant("Study"),
-                style: SegmentControlStyler(
-                    font: Font.system(size: 22, weight: .bold),
-                    textColor: SegmentControlStylerColor(active: Color.black, inactive: Color.gray),
-                    activeBarColor: Color.blue
-                )
+    @Previewable @State var activeSegmentOne = "Item One"
+    @Previewable @State var activeSegmentTwo = "Section Two"
+    @Previewable @State var activeSegmentThree = "Study"
+    
+    VStack {
+        
+        GridSegmentControl(
+            segments: [
+                Segment(title: "Item One"),
+                Segment(title: "Item Two"),
+                Segment(title: "Item Three")
+            ],
+            activeSegment: $activeSegmentOne,
+            leftAligned: true,
+            style: SegmentControlStyler(
+                style: .capsule,
+                font: Font.system(size: 16, weight: .semibold),
+                textColor: SegmentControlStylerColor(active: Color.white, inactive: Color.gray),
+                activeBarColor: Color.blue
+            ),
+            segmentTapped: nil
+        )
+        
+        GridSegmentControl(
+            segments: [
+                Segment(title: "Item One"),
+                Segment(title: "Item Two"),
+                Segment(title: "Item Three")
+            ],
+            activeSegment: $activeSegmentOne,
+            leftAligned: false,
+            style: SegmentControlStyler(
+                style: .capsule,
+                font: Font.system(size: 16, weight: .semibold),
+                textColor: SegmentControlStylerColor(active: Color.white, inactive: Color.gray),
+                activeBarColor: Color.blue
+            ),
+            segmentTapped: nil
+        )
+        
+        ScrollSegmentControl(
+            segments: [
+                Segment(title: "Study"),
+                Segment(title: "Practice")
+            ],
+            scrollable: false,
+            activeSegment: $activeSegmentThree,
+            style: SegmentControlStyler(
+                font: Font.system(size: 22, weight: .bold),
+                textColor: SegmentControlStylerColor(active: Color.black, inactive: Color.gray),
+                activeBarColor: Color.blue
             )
-            
-            ScrollSegmentControl(
-                segments: [
-                    Segment(title: "Section One"),
-                    Segment(title: "Section Two"),
-                    Segment(title: "Section Three")
-                ],
-                spacing: 0,
-                activeSegment: .constant("Section Two"),
-                style: SegmentControlStyler(
-                    style: .capsule,
-                    font: Font.system(size: 16, weight: .semibold),
-                    textColor: SegmentControlStylerColor(active: Color.white, inactive: Color.gray),
-                    activeBarColor: Color.blue)
+        )
+        
+        ScrollSegmentControl(
+            segments: [
+                Segment(title: "Study"),
+                Segment(title: "Practice")
+            ],
+            scrollable: false,
+            activeSegment:  $activeSegmentThree,
+            style: SegmentControlStyler(
+                style: .overline(),
+                font: Font.system(size: 22, weight: .bold),
+                textColor: SegmentControlStylerColor(active: Color.black, inactive: Color.gray),
+                activeBarColor: Color.blue
             )
-            
-            ScrollSegmentControl(
-                segments: [
-                    Segment(title: "Section One"),
-                    Segment(title: "Section Two"),
-                    Segment(title: "Section Three")
-                ],
-                activeSegment: .constant("Section Two"),
-                style: SegmentControlStyler(
-                    font: Font.system(size: 22, weight: .bold),
-                    textColor: SegmentControlStylerColor(active: Color.black, inactive: Color.gray),
-                    activeBarColor: Color.blue)
+        )
+        .background(Color.red)
+        
+        ScrollSegmentControl(
+            segments: [
+                Segment(title: "Study"),
+                Segment(title: "Practice")
+            ],
+            scrollable: false,
+            activeSegment:  $activeSegmentThree,
+            style: SegmentControlStyler(
+                style: .overline(bottomPadding: 16),
+                font: Font.system(size: 22, weight: .bold),
+                textColor: SegmentControlStylerColor(active: Color.black, inactive: Color.gray),
+                activeBarColor: Color.blue
             )
-            
-            ScrollSegmentControl(
-                segments: [
-                    Segment(title: "Section One"),
-                    Segment(title: "Section Two"),
-                    Segment(title: "Section Three"),
-                    Segment(title: "Section Four"),
-                    Segment(title: "Section Five"),
-                    Segment(title: "Section Six"),
-                ],
-                activeSegment: .constant("Section Two"),
-                style: SegmentControlStyler(
-                    font: Font.system(size: 22, weight: .bold),
-                    textColor: SegmentControlStylerColor(active: Color.black, inactive: Color.gray),
-                    activeBarColor: Color.blue)
-            )
-            Spacer()
-        }
+        )
+        .background(Color.yellow)
+        
+        ScrollSegmentControl(
+            segments: [
+                Segment(title: "Section One"),
+                Segment(title: "Section Two"),
+                Segment(title: "Section Three")
+            ],
+            spacing: 0,
+            activeSegment: $activeSegmentTwo,
+            style: SegmentControlStyler(
+                style: .capsule,
+                font: Font.system(size: 16, weight: .semibold),
+                textColor: SegmentControlStylerColor(active: Color.white, inactive: Color.gray),
+                activeBarColor: Color.blue)
+        )
+        
+        ScrollSegmentControl(
+            segments: [
+                Segment(title: "Section One"),
+                Segment(title: "Section Two"),
+                Segment(title: "Section Three")
+            ],
+            activeSegment: $activeSegmentTwo,
+            style: SegmentControlStyler(
+                font: Font.system(size: 22, weight: .bold),
+                textColor: SegmentControlStylerColor(active: Color.black, inactive: Color.gray),
+                activeBarColor: Color.blue)
+        )
+        
+        ScrollSegmentControl(
+            segments: [
+                Segment(title: "Section One"),
+                Segment(title: "Section Two"),
+                Segment(title: "Section Three"),
+                Segment(title: "Section Four"),
+                Segment(title: "Section Five"),
+                Segment(title: "Section Six"),
+            ],
+            activeSegment: $activeSegmentTwo,
+            style: SegmentControlStyler(
+                font: Font.system(size: 22, weight: .bold),
+                textColor: SegmentControlStylerColor(active: Color.black, inactive: Color.gray),
+                activeBarColor: Color.blue)
+        )
+        Spacer()
     }
 }

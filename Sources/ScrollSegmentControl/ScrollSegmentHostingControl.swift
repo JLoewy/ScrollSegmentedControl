@@ -8,5 +8,5 @@
 import Foundation
 import SwiftUI
 
-@available (iOS 15.0, *)
+@available(iOS 15.0, *)
 public class ScrollSegmentHostingControl: UIHostingController<ScrollSegmentControl> {}
