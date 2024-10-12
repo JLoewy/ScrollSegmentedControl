@@ -92,7 +92,7 @@ public struct ScrollSegmentControl: View {
             }
             else {
                 getHSTackSegmentedControl(scrollViewProxy: nil)
-                    .padding(.horizontal, 32)
+                    .padding(.horizontal, style.parentPadding.horizontal)
             }
         }
     }
@@ -160,9 +160,9 @@ private struct HSTackSegmentedControl: View {
                 .hoverEffect()
             }
         }
-        .padding(.top)
-        .padding(.horizontal, 32)
-        .padding(.bottom, 6)
+        .padding(.top, style.parentPadding.top)
+        .padding(.horizontal, style.parentPadding.horizontal)
+        .padding(.bottom, style.parentPadding.bottom)
         .onAppear {
 
             // Scroll to the active segment on appear

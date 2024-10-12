@@ -10,6 +10,19 @@ import SwiftUI
 
 public struct SegmentControlStyler {
     
+    public struct ParentPadding {
+
+        let top: CGFloat
+        let horizontal: CGFloat
+        let bottom: CGFloat
+
+        public init(top: CGFloat = 16, horizontal: CGFloat = 32, bottom: CGFloat = 6) {
+            self.top        = top
+            self.horizontal = horizontal
+            self.bottom     = bottom
+        }
+    }
+    
     let style: SegmentControlStyler.Style
     
     let font: SegmentControlStylerFont
@@ -18,13 +31,17 @@ public struct SegmentControlStyler {
     var activeBarColor: Color
     var activeBarWidth: CGFloat = 4
     
+    let parentPadding: ParentPadding
+    
     public init(style: SegmentControlStyler.Style = .underline(),
+                parentPadding: ParentPadding = .init(),
                 font: SegmentControlStylerFont,
                 textColor: SegmentControlStylerColor,
                 activeBarColor: Color,
                 activeBarWidth: CGFloat? = nil) {
         
         self.style          = style
+        self.parentPadding  = parentPadding
         self.font           = font
         self.textColor      = textColor
         self.activeBarColor = activeBarColor
@@ -35,6 +52,7 @@ public struct SegmentControlStyler {
     }
     
     public init(style: SegmentControlStyler.Style = .underline(),
+                parentPadding: ParentPadding = .init(),
                 font: Font,
                 textColor: SegmentControlStylerColor,
                 activeBarColor: Color,
@@ -42,6 +60,7 @@ public struct SegmentControlStyler {
         
         self.init(
             style: style,
+            parentPadding: parentPadding,
             font: SegmentControlStylerFont(active: font),
             textColor: textColor,
             activeBarColor: activeBarColor,
