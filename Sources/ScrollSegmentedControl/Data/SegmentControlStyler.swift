@@ -21,7 +21,7 @@ public struct SegmentControlStyler {
             self.horizontal = horizontal
             self.bottom     = bottom
         }
-    }
+    } 
     
     let style: SegmentControlStyler.Style
     
