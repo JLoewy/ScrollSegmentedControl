@@ -41,7 +41,7 @@ internal struct UnderlineSegmentButtonView: View {
                         .frame(width: 0, height: 0)
             }
             
-            Text(segment.title)
+            Text(.init("\(style.titleSpacerText)\(segment.title)\(style.titleSpacerText)"))
                 .font(isActiveSegment ? style.font.active : style.font.inactive)
                 .foregroundColor(isActiveSegment ? style.textColor.active : style.textColor.inactive)
             

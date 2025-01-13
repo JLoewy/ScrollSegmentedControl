@@ -44,7 +44,8 @@ internal struct SegmentButtonView: View {
                     )
                 
                 case .capsule:
-                    Text(segment.title)
+                    
+                    Text(.init("\(style.titleSpacerText)\(segment.title)\(style.titleSpacerText)"))
                         .font(isActiveSegment(currentSegment: segment) ? style.font.active : style.font.inactive)
                         .foregroundColor((segment.title == activeSegment) ? style.textColor.active : style.textColor.inactive)
                         .padding(.horizontal, 12)

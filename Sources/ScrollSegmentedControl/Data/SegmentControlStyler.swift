@@ -33,18 +33,23 @@ public struct SegmentControlStyler {
     
     let parentPadding: ParentPadding
     
+    /// If you want to add spaces to the title text this is the number of spaces on each side that will be added
+    let titleTextPaddingSpaces: Int?
+    
     public init(style: SegmentControlStyler.Style = .underline(),
                 parentPadding: ParentPadding = .init(),
                 font: SegmentControlStylerFont,
                 textColor: SegmentControlStylerColor,
                 activeBarColor: Color,
-                activeBarWidth: CGFloat? = nil) {
+                activeBarWidth: CGFloat? = nil,
+                titleTextPaddingSpaces: Int? = nil) {
         
-        self.style          = style
-        self.parentPadding  = parentPadding
-        self.font           = font
-        self.textColor      = textColor
-        self.activeBarColor = activeBarColor
+        self.style                  = style
+        self.parentPadding          = parentPadding
+        self.font                   = font
+        self.textColor              = textColor
+        self.activeBarColor         = activeBarColor
+        self.titleTextPaddingSpaces = titleTextPaddingSpaces
         
         if let activeBarWidth {
             self.activeBarWidth = activeBarWidth
@@ -66,6 +71,14 @@ public struct SegmentControlStyler {
             activeBarColor: activeBarColor,
             activeBarWidth: activeBarWidth
         )
+    }
+    
+    // MARK: - Accessors
+    
+    /// Gets the spacer text that should be used on each side of the title for the button based off of the titleTextPaddingSpaces variable
+    /// The amount of spaces is >= 0 spaces 
+    public var titleSpacerText: String {
+         Array(repeating: " ", count: titleTextPaddingSpaces ?? 0).joined()
     }
 }
 
