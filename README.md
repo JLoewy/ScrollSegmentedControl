@@ -5,4 +5,6 @@ A (optionally) horizontally scrollable segment control implementation in SwiftUI
 
 _To Do_
 • I aim to make the styling completely dynamic so anyone can inject their own styling (capsule, underline, overline, etc) they want. When... TBD
- ![Example](https://imgur.com/a/5y4ZpWR)
+
+
+ ![Example](https://i.postimg.cc/m29ffqNk/temp-Imagefez-AYb.avif)
