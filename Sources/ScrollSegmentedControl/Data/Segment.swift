@@ -7,7 +7,30 @@
 
 import Foundation
 
-public struct Segment: Identifiable {
+// MARK: - Segment Protocol
+
+public protocol Segment {
+    var title: String { get }
+    var object: Any? { get }
+    
+    var id: String { get }
+}
+
+extension Segment {
+    
+    /// Checks if the two objects segment conformers are equatable.
+    /// - Important: Does not take the *object* variable into account when determining equitability
+    /// - Parameter other: **Segment**
+    /// - Returns: **Bool**
+    public func isEqual(to other: Segment) -> Bool {
+        type(of: self) == type(of: other) && self.id == other.id
+    }
+}
+
+// MARK: - SegmentItem
+
+/// Generic convenience struct that conforms to Segment
+public struct SegmentItem: Segment {
     
     public let title: String
     public var object: Any?
@@ -17,12 +40,5 @@ public struct Segment: Identifiable {
     public init(title: String, object: Any? = nil) {
         self.title  = title
         self.object = object
-    }
-}
-
-extension Segment: Equatable {
-    
-    public static func == (lhs: Segment, rhs: Segment) -> Bool {
-        lhs.id == rhs.id
     }
 }

@@ -12,15 +12,11 @@ internal struct UnderlineSegmentButtonView: View {
     let segment: Segment
     let style: SegmentControlStyler
     
-    @Binding var activeSegment: String
-    
-    private var isActiveSegment: Bool {
-        activeSegment == segment.title
-    }
+    @Binding var activeSegment: Segment
     
     init(segment: Segment,
          style: SegmentControlStyler,
-         activeSegment: Binding<String>) {
+         activeSegment: Binding<Segment>) {
         
         self.segment           = segment
         self.style             = style
@@ -33,7 +29,7 @@ internal struct UnderlineSegmentButtonView: View {
             
             switch style.style {
                 case .overline(let bottomPadding):
-                    underlineBarView
+                    underlineBarView(isActive: segment.isEqual(to: activeSegment))
                         .padding(.bottom, bottomPadding)
                     
                 default:
@@ -41,13 +37,11 @@ internal struct UnderlineSegmentButtonView: View {
                         .frame(width: 0, height: 0)
             }
             
-            Text(.init("\(style.titleSpacerText)\(segment.title)\(style.titleSpacerText)"))
-                .font(isActiveSegment ? style.font.active : style.font.inactive)
-                .foregroundColor(isActiveSegment ? style.textColor.active : style.textColor.inactive)
+            getSegmentTitle(isActive: segment.isEqual(to: activeSegment))
             
             switch style.style {
                 case .underline(let topPadding):
-                    underlineBarView
+                    underlineBarView(isActive: segment.isEqual(to: activeSegment))
                         .padding(.top, topPadding)
                     
                 default:
@@ -56,14 +50,23 @@ internal struct UnderlineSegmentButtonView: View {
             }
         }
         .transition(.opacity)
-        .animation(.linear(duration: 0.25), value: activeSegment)
+        .animation(.linear(duration: 0.25), value: activeSegment.id)
     }
     
-    private var underlineBarView: some View {
+    private func getSegmentTitle(isActive: Bool) -> some View {
+        
+        Text(.init("\(style.titleSpacerText)\(segment.title)\(style.titleSpacerText)"))
+            .font(isActive ? style.font.active : style.font.inactive)
+            .lineLimit(2)
+            .multilineTextAlignment(.leading)
+            .foregroundColor(isActive ? style.textColor.active : style.textColor.inactive)
+    }
+    
+    private func underlineBarView(isActive: Bool) -> some View {
         style.activeBarColor
             .cornerRadius(style.activeBarWidth / 2)
             .frame(height: style.activeBarWidth)
-            .opacity(isActiveSegment ? 1 : 0)
+            .opacity(isActive ? 1 : 0)
     }
 }
 
@@ -78,7 +81,9 @@ extension UnderlineSegmentButtonView {
 @available(iOS 17.0, *)
 #Preview {
     
-    @Previewable @State var activeSegment: String = "Test One"
+    @Previewable @State var activeSegment: any Segment = SegmentItem(title: "Test One")
+    let testOneSegmentItem = SegmentItem(title: "Test One")
+    let testTwoSegmentItem = SegmentItem(title: "Test Two")
     
     let stylerUnderlineDefault = SegmentControlStyler(
         style: .underline(),
@@ -113,23 +118,23 @@ extension UnderlineSegmentButtonView {
             Button {
                 
                 withAnimation {
-                    activeSegment = "Test One"
+                    activeSegment = testOneSegmentItem
                 }
                 
             } label: {
                 UnderlineSegmentButtonView(
-                    segment: .init(title: "Test One"),
+                    segment: SegmentItem(title: "Test One"),
                     style: stylerUnderlineDefault,
                     activeSegment: $activeSegment
                 )
             }
             Button {
                 withAnimation {
-                    activeSegment = "Test Two"
+                    activeSegment = SegmentItem(title: "Test Two")
                 }
             } label: {
                 UnderlineSegmentButtonView(
-                    segment: .init(title: "Test Two"),
+                    segment: SegmentItem(title: "Test Two"),
                     style: stylerUnderlineDefault,
                     activeSegment: $activeSegment
                 )
@@ -143,23 +148,23 @@ extension UnderlineSegmentButtonView {
             Button {
                 
                 withAnimation {
-                    activeSegment = "Test One"
+                    activeSegment = testOneSegmentItem
                 }
                 
             } label: {
                 UnderlineSegmentButtonView(
-                    segment: .init(title: "Test One"),
+                    segment: testOneSegmentItem,
                     style: stylerUnderlineLarge,
                     activeSegment: $activeSegment
                 )
             }
             Button {
                 withAnimation {
-                    activeSegment = "Test Two"
+                    activeSegment = testTwoSegmentItem
                 }
             } label: {
                 UnderlineSegmentButtonView(
-                    segment: .init(title: "Test Two"),
+                    segment: testTwoSegmentItem,
                     style: stylerUnderlineLarge,
                     activeSegment: $activeSegment
                 )
@@ -173,23 +178,23 @@ extension UnderlineSegmentButtonView {
             Button {
                 
                 withAnimation {
-                    activeSegment = "Test One"
+                    activeSegment = testOneSegmentItem
                 }
                 
             } label: {
                 UnderlineSegmentButtonView(
-                    segment: .init(title: "Test One"),
+                    segment: testOneSegmentItem,
                     style: stylerOverlineDefault,
                     activeSegment: $activeSegment
                 )
             }
             Button {
                 withAnimation {
-                    activeSegment = "Test Two"
+                    activeSegment = testTwoSegmentItem
                 }
             } label: {
                 UnderlineSegmentButtonView(
-                    segment: .init(title: "Test Two"),
+                    segment: testTwoSegmentItem,
                     style: stylerOverlineDefault,
                     activeSegment: $activeSegment
                 )
@@ -203,23 +208,23 @@ extension UnderlineSegmentButtonView {
             Button {
                 
                 withAnimation {
-                    activeSegment = "Test One"
+                    activeSegment = testOneSegmentItem
                 }
                 
             } label: {
                 UnderlineSegmentButtonView(
-                    segment: .init(title: "Test One"),
+                    segment: testOneSegmentItem,
                     style: stylerOverlineLarge,
                     activeSegment: $activeSegment
                 )
             }
             Button {
                 withAnimation {
-                    activeSegment = "Test Two"
+                    activeSegment = testTwoSegmentItem
                 }
             } label: {
                 UnderlineSegmentButtonView(
-                    segment: .init(title: "Test Two"),
+                    segment: testTwoSegmentItem,
                     style: stylerOverlineLarge,
                     activeSegment: $activeSegment
                 )
@@ -228,5 +233,8 @@ extension UnderlineSegmentButtonView {
         }
         .padding(.vertical)
         .background(Color.cyan)
+        
+        Spacer()
     }
+    
 }

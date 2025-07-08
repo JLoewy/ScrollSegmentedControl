@@ -5,46 +5,83 @@
 //  Created by Jason Loewy on 10/5/24.
 //
 
-import XCTest
+import Testing
 
-@testable import ScrollSegmentControl
+@testable import ScrollSegmentedControl
 
-final class Segment_Test: XCTestCase {
+// MARK: - Custom conformer used only for tests
+private struct CustomSegment: Segment {
+    let title: String
+    var object: Any?
     
+    var id: String { title }         // distinct stored property → id
+}
+
+// MARK: - Test Suite
+@Suite("Segment protocol – isEqual(to:) tests")
+struct SegmentTests {
     
-    func testInitializationWithTitle() {
-        let segment = Segment(title: "Test Segment")
-        XCTAssertEqual(segment.title, "Test Segment")
-        XCTAssertNil(segment.object)
+    private func makeCustom(_ id: String) -> CustomSegment {
+        CustomSegment(title: id, object: nil)
     }
     
-    func testInitializationWithTitleAndObject() {
-        let object = "Sample Object"
-        let segment = Segment(title: "Test Segment", object: object)
-        XCTAssertEqual(segment.title, "Test Segment")
-        XCTAssertEqual(segment.object as? String, object)
+    // MARK: SegmentItem
+    
+    @Test("SegmentItem equality – same id, same type")
+    func segmentItemEquality() {
+        let a = SegmentItem(title: "Home")
+        let b = SegmentItem(title: "Home")
+        #expect(a.isEqual(to: b))
     }
     
-    func testIdIsEqualToTitle() {
-        let segment = Segment(title: "Test Segment")
-        XCTAssertEqual(segment.id, "Test Segment")
+    @Test("SegmentItem inequality – different id")
+    func segmentItemInequality() {
+        let a = SegmentItem(title: "Home")
+        let b = SegmentItem(title: "Profile")
+        #expect(!a.isEqual(to: b))
     }
     
-    func testEquatableWithEqualSegments() {
-        let segment1 = Segment(title: "Test Segment")
-        let segment2 = Segment(title: "Test Segment")
-        XCTAssertEqual(segment1, segment2)
+    // MARK: CustomSegment
+    
+    @Test("CustomSegment equality – same id, same type")
+    func customSegmentEquality() {
+        let a = makeCustom("Library")
+        let b = makeCustom("Library")
+        #expect(a.isEqual(to: b))
     }
     
-    func testEquatableWithDifferentSegments() {
-        let segment1 = Segment(title: "Segment One")
-        let segment2 = Segment(title: "Segment Two")
-        XCTAssertNotEqual(segment1, segment2)
+    @Test("CustomSegment vs Standard equality – same id, same type")
+    func customVsSegmentEquality() {
+        let a = makeCustom("Library")
+        let b = SegmentItem(title: "Library")
+        #expect(!a.isEqual(to: b))
     }
     
-    func testEquatableWithDifferentObjectsButSameTitle() {
-        let segment1 = Segment(title: "Test Segment", object: "Object 1")
-        let segment2 = Segment(title: "Test Segment", object: "Object 2")
-        XCTAssertEqual(segment1, segment2)
+    @Test("CustomSegment inequality – different id")
+    func customSegmentInequality() {
+        let a = makeCustom("Library")
+        let b = makeCustom("Search")
+        #expect(!a.isEqual(to: b))
+    }
+    
+    // MARK: Cross-type behavior
+    
+    @Test("Different concrete types with identical id are NOT equal")
+    func crossTypeInequality() {
+        let item   = SegmentItem(title: "SharedID")
+        let custom = makeCustom("SharedID")
+        #expect(!item.isEqual(to: custom))
+        #expect(!custom.isEqual(to: item))   // symmetry check
+    }
+    
+    // MARK: Object property does not affect isEqual
+    
+    @Test("`object` differences do NOT influence equality")
+    func objectDoesNotAffectEquality() {
+        let a = SegmentItem(title: "Settings", object: nil)
+        let b = SegmentItem(title: "Settings", object: 12345)     // same id, diff object
+        #expect(a.isEqual(to: b)) // still equal
+        #expect(b.object != nil)
+        #expect((b.object as! Int) == 12345)
     }
 }

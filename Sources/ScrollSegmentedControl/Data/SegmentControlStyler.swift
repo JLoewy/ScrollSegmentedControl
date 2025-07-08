@@ -10,54 +10,42 @@ import SwiftUI
 
 public struct SegmentControlStyler {
     
-    public struct ParentPadding {
-
-        let top: CGFloat
-        let horizontal: CGFloat
-        let bottom: CGFloat
-
-        public init(top: CGFloat = 16, horizontal: CGFloat = 32, bottom: CGFloat = 6) {
-            self.top        = top
-            self.horizontal = horizontal
-            self.bottom     = bottom
-        }
-    } 
-    
     let style: SegmentControlStyler.Style
     
     let font: SegmentControlStylerFont
     let textColor: SegmentControlStylerColor
     
-    var activeBarColor: Color
-    var activeBarWidth: CGFloat = 4
+    let activeBarColor: Color
+    let activeBarWidth: CGFloat
     
-    let parentPadding: ParentPadding
+    let parentPadding: EdgeInsets?
     
     /// If you want to add spaces to the title text this is the number of spaces on each side that will be added
     let titleTextPaddingSpaces: Int?
+    let scrollable: Bool
     
     public init(style: SegmentControlStyler.Style = .underline(),
-                parentPadding: ParentPadding = .init(),
+                parentPadding: EdgeInsets? = nil,
+                scrollable: Bool = true,
                 font: SegmentControlStylerFont,
                 textColor: SegmentControlStylerColor,
                 activeBarColor: Color,
                 activeBarWidth: CGFloat? = nil,
                 titleTextPaddingSpaces: Int? = nil) {
         
-        self.style                  = style
-        self.parentPadding          = parentPadding
-        self.font                   = font
-        self.textColor              = textColor
-        self.activeBarColor         = activeBarColor
+        self.style          = style
+        self.parentPadding  = parentPadding
+        self.scrollable     = scrollable
+        self.font           = font
+        self.textColor      = textColor
+        self.activeBarColor = activeBarColor
         self.titleTextPaddingSpaces = titleTextPaddingSpaces
-        
-        if let activeBarWidth {
-            self.activeBarWidth = activeBarWidth
-        }
+        self.activeBarWidth = activeBarWidth ?? 4
     }
     
     public init(style: SegmentControlStyler.Style = .underline(),
-                parentPadding: ParentPadding = .init(),
+                parentPadding: EdgeInsets? = nil,
+                scrollable: Bool = true,
                 font: Font,
                 textColor: SegmentControlStylerColor,
                 activeBarColor: Color,
@@ -66,6 +54,7 @@ public struct SegmentControlStyler {
         self.init(
             style: style,
             parentPadding: parentPadding,
+            scrollable: scrollable,
             font: SegmentControlStylerFont(active: font),
             textColor: textColor,
             activeBarColor: activeBarColor,

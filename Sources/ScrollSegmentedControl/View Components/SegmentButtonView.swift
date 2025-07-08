@@ -12,27 +12,19 @@ internal struct SegmentButtonView: View {
     let segment: Segment
     let style: SegmentControlStyler
     
-    @Binding var activeSegment: String
+    @Binding var activeSegment: Segment
     var scrollViewProxy: ScrollViewProxy?
-    
-    var segmentTapped:((Segment) -> Void)?
-    
-    private func isActiveSegment(currentSegment: Segment) -> Bool {
-        (currentSegment.title == activeSegment)
-    }
     
     var body: some View {
         Button {
             
             withAnimation {
-                
-                activeSegment = segment.title
-                segmentTapped?(segment)
-                
+                activeSegment = segment
                 if let scrollViewProxy {
                     scrollViewProxy.scrollTo(segment.id)
                 }
             }
+            
         } label: {
             
             switch self.style.style {
@@ -44,18 +36,24 @@ internal struct SegmentButtonView: View {
                     )
                 
                 case .capsule:
-                    
-                    Text(.init("\(style.titleSpacerText)\(segment.title)\(style.titleSpacerText)"))
-                        .font(isActiveSegment(currentSegment: segment) ? style.font.active : style.font.inactive)
-                        .foregroundColor((segment.title == activeSegment) ? style.textColor.active : style.textColor.inactive)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 4)
-                        .background(isActiveSegment(currentSegment: segment) ? style.activeBarColor : Color.clear)
-                        .clipShape(.capsule)
-                    
+                    getCapsule(text: segment.title,
+                               isActive: (segment.isEqual(to: activeSegment)))
             }
         }
         .buttonStyle(.plain)
-        .animation(.easeOut(duration: 0.35), value: activeSegment)
+        .animation(.easeOut(duration: 0.35), value: activeSegment.id)
+    }
+    
+    private func getCapsule(text: String, isActive: Bool) -> some View {
+        
+        Text(.init("\(style.titleSpacerText)\(text)\(style.titleSpacerText)"))
+            .font(isActive ? style.font.active : style.font.inactive)
+            .lineLimit(2)
+            .multilineTextAlignment(.leading)
+            .foregroundColor(isActive ? style.textColor.active : style.textColor.inactive)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 4)
+            .background(isActive ? style.activeBarColor : Color.clear, in: .capsule)
+        
     }
 }

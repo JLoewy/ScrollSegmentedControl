@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "C5DAAFB3-E8E4-4643-85EC-9C125D3D82CC",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "ScrollSegmentedControlTests",
+        "name" : "ScrollSegmentedControlTests"
+      }
+    }
+  ],
+  "version" : 1
+}
