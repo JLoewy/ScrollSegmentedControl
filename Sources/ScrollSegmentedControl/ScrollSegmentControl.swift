@@ -1,18 +1,17 @@
 import SwiftUI
 
-@available(iOS 15.0, *)
-public struct ScrollSegmentControl: View {
+public struct ScrollSegmentControl<S: Segment>: View {
     
-    public let segments: [Segment]
+    public let segments: [S]
     
     let spacing: CGFloat
     let style: SegmentControlStyler
     
-    @Binding var activeSegment: Segment
+    @Binding var activeSegment: S
     
-    public init(segments: [Segment],
+    public init(segments: [S],
                 spacing: CGFloat = 16,
-                activeSegment: Binding<Segment>,
+                activeSegment: Binding<S>,
                 style: SegmentControlStyler) {
         
         self.segments       = segments
@@ -55,9 +54,9 @@ public struct ScrollSegmentControl: View {
 @available(iOS 18.0, *)
 #Preview {
     
-    @Previewable @State var activeSegmentOne: any Segment   = SegmentItem(title: "Item One")
-    @Previewable @State var activeSegmentTwo: any Segment   = SegmentItem(title: "Section Two")
-    @Previewable @State var activeSegmentThree: any Segment = SegmentItem(title: "Study")
+    @Previewable @State var activeSegmentOne   = SegmentItem(title: "Item One")
+    @Previewable @State var activeSegmentTwo   = SegmentItem(title: "Section Two")
+    @Previewable @State var activeSegmentThree = SegmentItem(title: "Study")
     
     let segments = [
         SegmentItem(title: "Item One"),
@@ -65,13 +64,12 @@ public struct ScrollSegmentControl: View {
         SegmentItem(title: "Item Three")
     ]
     
-    let studySegments: [any Segment] = [
+    let studySegments = [
         SegmentItem(title: "Study"),
         SegmentItem(title: "Practice")
     ]
     
     VStack {
-        
         
         ScrollSegmentControl(
             segments: studySegments,

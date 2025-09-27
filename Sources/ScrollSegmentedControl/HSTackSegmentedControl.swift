@@ -8,13 +8,13 @@
 import Foundation
 import SwiftUI
 
-internal struct HSTackSegmentedControl: View {
+internal struct HSTackSegmentedControl<S: Segment>: View {
     
     let spacing: CGFloat
-    let segments: [Segment]
+    let segments: [S]
     let style: SegmentControlStyler
     
-    @Binding var activeSegment: Segment
+    @Binding var activeSegment: S
     var scrollViewProxy: ScrollViewProxy?
     
     var body: some View {

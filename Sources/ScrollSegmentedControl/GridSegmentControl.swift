@@ -8,17 +8,16 @@
 
 import SwiftUI
 
-@available(iOS 16.0, *)
-public struct GridSegmentControl: View {
+public struct GridSegmentControl<S: Segment>: View {
     
-    public let segments: [Segment]
-    @Binding var activeSegment: Segment
+    public let segments: [S]
+    @Binding var activeSegment: S
     
     let style: SegmentControlStyler
     let leftAligned: Bool
     
-    public init(segments: [Segment],
-                activeSegment: Binding<Segment>,
+    public init(segments: [S],
+                activeSegment: Binding<S>,
                 leftAligned: Bool = (UIDevice.current.userInterfaceIdiom == .pad),
                 style: SegmentControlStyler) {
         
@@ -58,10 +57,10 @@ public struct GridSegmentControl: View {
 @available(iOS 17.0, *)
 #Preview {
 
-    @Previewable @State var activeSegmentOne: any Segment = SegmentItem(title: "Item One")
-    @Previewable @State var activeSegmentTwo: any Segment = SegmentItem(title: "Item One")
-    @Previewable @State var activeSegmentThree: any Segment = SegmentItem(title: "Item One")
-    @Previewable @State var activeSegmentFour: any Segment = SegmentItem(title: "Item One")
+    @Previewable @State var activeSegmentOne   = SegmentItem(title: "Item One")
+    @Previewable @State var activeSegmentTwo   = SegmentItem(title: "Item One")
+    @Previewable @State var activeSegmentThree = SegmentItem(title: "Item One")
+    @Previewable @State var activeSegmentFour  = SegmentItem(title: "Item One")
     
     let segments = [
         SegmentItem(title: "Item One"),

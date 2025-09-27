@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-internal struct SegmentButtonView: View {
+internal struct SegmentButtonView<S: Segment>: View {
     
-    let segment: Segment
+    let segment: S
     let style: SegmentControlStyler
     
-    @Binding var activeSegment: Segment
+    @Binding var activeSegment: S
     var scrollViewProxy: ScrollViewProxy?
     
     var body: some View {

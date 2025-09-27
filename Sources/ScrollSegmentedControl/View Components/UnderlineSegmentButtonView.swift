@@ -7,16 +7,16 @@
 
 import SwiftUI
 
-internal struct UnderlineSegmentButtonView: View {
+internal struct UnderlineSegmentButtonView<S: Segment>: View {
     
-    let segment: Segment
+    let segment: S
     let style: SegmentControlStyler
     
-    @Binding var activeSegment: Segment
+    @Binding var activeSegment: S
     
-    init(segment: Segment,
+    init(segment: S,
          style: SegmentControlStyler,
-         activeSegment: Binding<Segment>) {
+         activeSegment: Binding<S>) {
         
         self.segment           = segment
         self.style             = style
@@ -81,7 +81,7 @@ extension UnderlineSegmentButtonView {
 @available(iOS 17.0, *)
 #Preview {
     
-    @Previewable @State var activeSegment: any Segment = SegmentItem(title: "Test One")
+    @Previewable @State var activeSegment = SegmentItem(title: "Test One")
     let testOneSegmentItem = SegmentItem(title: "Test One")
     let testTwoSegmentItem = SegmentItem(title: "Test Two")
     
@@ -113,6 +113,8 @@ extension UnderlineSegmentButtonView {
         activeBarColor: Color.blue
     )
     
+    let testSegmentItem = SegmentItem(title: "Test One")
+    
     VStack {
         HStack {
             Button {
@@ -122,8 +124,8 @@ extension UnderlineSegmentButtonView {
                 }
                 
             } label: {
-                UnderlineSegmentButtonView(
-                    segment: SegmentItem(title: "Test One"),
+                UnderlineSegmentButtonView<SegmentItem>(
+                    segment: testSegmentItem,
                     style: stylerUnderlineDefault,
                     activeSegment: $activeSegment
                 )
