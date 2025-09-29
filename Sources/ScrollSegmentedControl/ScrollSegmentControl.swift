@@ -32,7 +32,7 @@ public struct ScrollSegmentControl<S: Segment>: View {
             else {
                 getHSTackSegmentedControl(scrollViewProxy: nil)
                     .padding(.leading, style.parentPadding?.leading ?? 0)
-                    .padding(.leading, style.parentPadding?.trailing ?? 0)
+                    .padding(.trailing, style.parentPadding?.trailing ?? 0)
             }
         }
     }
@@ -77,7 +77,10 @@ public struct ScrollSegmentControl<S: Segment>: View {
             style: SegmentControlStyler(
                 scrollable: false,
                 font: Font.system(size: 22, weight: .bold),
-                textColor: SegmentControlStylerColor(active: Color.black, inactive: Color.gray),
+                textColor: SegmentControlStylerColor(
+                    active: Color.black,
+                    inactive: Color.gray
+                ),
                 activeBarColor: Color.blue
             )
         )
@@ -87,6 +90,7 @@ public struct ScrollSegmentControl<S: Segment>: View {
             activeSegment:  $activeSegmentThree,
             style: SegmentControlStyler(
                 style: .overline(),
+                parentPadding: .init(top: 0, leading: 16, bottom: 0, trailing: 16),
                 scrollable: false,
                 font: Font.system(size: 22, weight: .bold),
                 textColor: SegmentControlStylerColor(active: Color.black, inactive: Color.gray),
